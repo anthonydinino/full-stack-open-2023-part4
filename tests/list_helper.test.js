@@ -1,5 +1,5 @@
 const listHelper = require("../utils/list_helper");
-const blogHelper = require("./blog_helper");
+const blogHelper = require("../utils/blog_helper");
 const listWithOneBlog = blogHelper.listWithOneBlog;
 const blogs = blogHelper.blogs;
 
