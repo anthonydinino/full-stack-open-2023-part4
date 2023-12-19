@@ -1,9 +1,13 @@
 const blogRouter = require("express").Router();
 const Blog = require("../models/blog");
 
+blogRouter.get("/test", (req, res) => {
+  res.send("hello");
+});
+
 blogRouter.get("/", (req, res) => {
   Blog.find({}).then((blogs) => {
-    res.json(blogs);
+    res.status(200).json(blogs);
   });
 });
 

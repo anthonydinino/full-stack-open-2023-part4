@@ -2,7 +2,6 @@ const listHelper = require("../utils/list_helper");
 
 test("dummy returns one", () => {
   const blogs = [];
-
   const result = listHelper.dummy(blogs);
   expect(result).toBe(1);
 });
@@ -68,7 +67,7 @@ const blogs = [
     __v: 0,
   },
   {
-    _id: "5a422bc64h23a676234d17fc",
+    _id: "5a422bc64b54a676234d17fc",
     title: "Star wars",
     author: "Robert C. Martin",
     url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/StarWars.html",
@@ -137,3 +136,5 @@ describe("most likes", () => {
     expect(result).toEqual({ author: "Robert C. Martin", likes: 23 });
   });
 });
+
+module.exports = { blogs };
