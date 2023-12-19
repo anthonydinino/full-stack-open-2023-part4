@@ -13,10 +13,16 @@ blogRouter.get("/", (req, res) => {
 
 blogRouter.post("/", (req, res) => {
   const blog = new Blog(req.body);
-
-  blog.save().then((result) => {
-    res.status(201).json(result);
-  });
+  blog
+    .save()
+    .then((result) => {
+      res.status(201).json(result);
+    })
+    .catch((err) => {
+      if (err.name == "ValidationError") {
+        res.status(400).json({ error: err.message });
+      }
+    });
 });
 
 module.exports = blogRouter;
