@@ -32,7 +32,20 @@ test("making a post request creates a new blog post", async () => {
 
   const response = await api.get("/api/blogs");
   expect(response._body).toHaveLength(helper.blogs.length + 1);
-}, 10000);
+});
+
+test("if likes property is missing, default to 0", async () => {
+  await api
+    .post("/api/blogs")
+    .send({
+      title: "Test Blog",
+      author: "Test Author",
+      url: "https://testurl.com",
+    })
+    .expect(201);
+  const response = await api.get("/api/blogs").expect(200);
+  expect(response._body[response._body.length - 1].likes).toBe(0);
+});
 
 afterAll(async () => {
   await mongoose.connection.close();
