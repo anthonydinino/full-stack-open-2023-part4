@@ -4,6 +4,7 @@ const config = require("./utils/config");
 const app = express();
 const blogRouter = require("./controllers/blog");
 const logger = require("./utils/logger");
+require("express-async-errors");
 
 app.use(cors());
 app.use(express.json());
@@ -20,9 +21,5 @@ mongoose
   });
 
 app.use("/api/blogs", blogRouter);
-
-app.get("/", (req, res) => {
-  res.send("hello");
-});
 
 module.exports = app;

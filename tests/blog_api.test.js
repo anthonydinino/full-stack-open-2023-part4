@@ -7,7 +7,7 @@ const helper = require("../utils/blog_helper");
 
 mongoose.set("bufferTimeoutMS", 30000);
 
-describe("general tests", () => {
+describe("when there is initally some blogs saved", () => {
   test("blogs are returned as json", async () => {
     await api
       .get("/api/blogs")
@@ -19,8 +19,10 @@ describe("general tests", () => {
     const response = await api.get("/api/blogs");
     expect(response._body[0].id).toBeDefined();
   });
+});
 
-  test("making a post request creates a new blog post", async () => {
+describe("addition of new note", () => {
+  test("succeeds with valid data", async () => {
     await api
       .post("/api/blogs")
       .send({
@@ -30,13 +32,10 @@ describe("general tests", () => {
         url: "https://testurl.com",
       })
       .expect(201);
-
     const blogsAtEnd = await helper.blogsInDB();
     expect(blogsAtEnd).toHaveLength(helper.blogs.length + 1);
   });
-});
 
-describe("default values", () => {
   test("if blog's likes property is missing, default to 0", async () => {
     await api
       .post("/api/blogs")
@@ -49,9 +48,7 @@ describe("default values", () => {
     const blogsAtEnd = await helper.blogsInDB();
     expect(blogsAtEnd[blogsAtEnd.length - 1].likes).toBe(0);
   });
-});
 
-describe("blog properties missing", () => {
   test("if blog's title property is missing, status 400 is sent back", async () => {
     await api
       .post("/api/blogs")
@@ -60,6 +57,8 @@ describe("blog properties missing", () => {
         url: "https://testurl.com",
       })
       .expect(400);
+    const blogsAtEnd = await helper.blogsInDB();
+    expect(blogsAtEnd).toHaveLength(helper.blogs.length);
   });
 
   test("if blog's url property is missing, status 400 is sent back", async () => {
@@ -70,6 +69,8 @@ describe("blog properties missing", () => {
         author: "Test Author",
       })
       .expect(400);
+    const blogsAtEnd = await helper.blogsInDB();
+    expect(blogsAtEnd).toHaveLength(helper.blogs.length);
   });
 });
 
