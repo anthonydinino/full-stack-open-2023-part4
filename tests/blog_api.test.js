@@ -21,7 +21,7 @@ describe("when there is initally some blogs saved", () => {
   });
 });
 
-describe("addition of new note", () => {
+describe("addition of new blog", () => {
   test("succeeds with valid data", async () => {
     await api
       .post("/api/blogs")
@@ -69,6 +69,20 @@ describe("addition of new note", () => {
         author: "Test Author",
       })
       .expect(400);
+    const blogsAtEnd = await helper.blogsInDB();
+    expect(blogsAtEnd).toHaveLength(helper.blogs.length);
+  });
+});
+
+describe("deletion of a blog", () => {
+  test("blog with correct id is deleted, status 204 is sent back", async () => {
+    await api.delete("/api/blogs/5a422aa71b54a676234d17f8").expect(204);
+    const blogsAtEnd = await helper.blogsInDB();
+    expect(blogsAtEnd).toHaveLength(helper.blogs.length - 1);
+  });
+
+  test("blog with incorrect id, status 400 is sent back", async () => {
+    await api.delete("/api/blogs/test123").expect(400);
     const blogsAtEnd = await helper.blogsInDB();
     expect(blogsAtEnd).toHaveLength(helper.blogs.length);
   });
