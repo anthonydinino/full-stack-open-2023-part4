@@ -31,8 +31,8 @@ describe("general tests", () => {
       })
       .expect(201);
 
-    const response = await api.get("/api/blogs");
-    expect(response._body).toHaveLength(helper.blogs.length + 1);
+    const blogsAtEnd = await helper.blogsInDB();
+    expect(blogsAtEnd).toHaveLength(helper.blogs.length + 1);
   });
 });
 
@@ -46,8 +46,8 @@ describe("default values", () => {
         url: "https://testurl.com",
       })
       .expect(201);
-    const response = await api.get("/api/blogs").expect(200);
-    expect(response._body[response._body.length - 1].likes).toBe(0);
+    const blogsAtEnd = await helper.blogsInDB();
+    expect(blogsAtEnd[blogsAtEnd.length - 1].likes).toBe(0);
   });
 });
 
@@ -79,7 +79,5 @@ afterAll(async () => {
 
 beforeEach(async () => {
   await Blog.deleteMany({});
-  const blogObjects = helper.blogs.map((note) => new Blog(note));
-  const promiseArray = blogObjects.map((blog) => blog.save());
-  await Promise.all(promiseArray);
+  await Blog.insertMany(helper.blogs);
 });
