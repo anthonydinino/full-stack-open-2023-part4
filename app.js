@@ -1,10 +1,11 @@
 const express = require("express");
 const cors = require("cors");
 const config = require("./utils/config");
+require("express-async-errors");
 const app = express();
 const blogRouter = require("./controllers/blog");
 const logger = require("./utils/logger");
-require("express-async-errors");
+const errorHandler = require("./utils/error_handler");
 
 app.use(cors());
 app.use(express.json());
@@ -21,5 +22,6 @@ mongoose
   });
 
 app.use("/api/blogs", blogRouter);
+app.use(errorHandler);
 
 module.exports = app;
