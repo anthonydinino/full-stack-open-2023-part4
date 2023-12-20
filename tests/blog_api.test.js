@@ -94,9 +94,6 @@ describe("updating of a blog", () => {
     await api
       .put(`/api/blogs/${id}`)
       .send({
-        title: "Go To Statement Considered Harmful",
-        author: "Edsger W. Dijkstra",
-        url: "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
         likes: 77,
       })
       .expect(200);
@@ -105,13 +102,23 @@ describe("updating of a blog", () => {
     expect(oneBlog.likes).toBe(77);
   });
 
+  test("blog name is updated and status of 200 is sent back", async () => {
+    const id = "5a422aa71b54a676234d17f8";
+    await api
+      .put(`/api/blogs/${id}`)
+      .send({
+        title: "Go To Statement Is Not Considered Harmful",
+      })
+      .expect(200);
+
+    const oneBlog = await helper.blogInDB(id);
+    expect(oneBlog.title).toBe("Go To Statement Is Not Considered Harmful");
+  });
+
   test("blog with incorrect id sends status of 400", async () => {
     await api
       .put("/api/blogs/test123")
       .send({
-        title: "Go To Statement Considered Harmful",
-        author: "Edsger W. Dijkstra",
-        url: "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
         likes: 77,
       })
       .expect(400);
