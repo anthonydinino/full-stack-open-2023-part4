@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const app = require("../app");
@@ -36,4 +37,46 @@ describe("when there is initially one user in db", () => {
     const usernames = usersAtEnd.map((u) => u.username);
     expect(usernames).toContain(newUser.username);
   });
+
+  test("if username already exists", async () => {
+    const usersAtStart = await helper.usersInDB();
+
+    const newUser = {
+      username: "root",
+      name: "Root User",
+      password: "sekret",
+    };
+
+    await api
+      .post("/api/users")
+      .send(newUser)
+      .expect(409)
+      .expect("Content-Type", /application\/json/);
+
+    const usersAtEnd = await helper.usersInDB();
+    expect(usersAtEnd).toHaveLength(usersAtStart.length);
+  });
+
+  test("if not 3 minimum characters for username and password", async () => {
+    const usersAtStart = await helper.usersInDB();
+
+    const newUser = {
+      username: "ro",
+      name: "Root User",
+      password: "sekret",
+    };
+
+    await api
+      .post("/api/users")
+      .send(newUser)
+      .expect(400)
+      .expect("Content-Type", /application\/json/);
+
+    const usersAtEnd = await helper.usersInDB();
+    expect(usersAtEnd).toHaveLength(usersAtStart.length);
+  });
+});
+
+afterAll(async () => {
+  await mongoose.connection.close();
 });
