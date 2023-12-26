@@ -9,10 +9,12 @@ const logger = require("./utils/logger");
 const errorHandler = require("./utils/error_handler");
 const blogRouter = require("./controllers/blog");
 const userRouter = require("./controllers/user");
+const loginRouter = require("./controllers/login");
 
 // controller middleware
 app.use("/api/users", userRouter);
 app.use("/api/blogs", blogRouter);
+app.use("/api/login", loginRouter);
 
 // connection to mongodb
 const mongoose = require("mongoose");
