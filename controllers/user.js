@@ -5,12 +5,16 @@ const helper = require("../utils/user_helper");
 const { error } = require("../utils/logger");
 
 userRouter.get("/", async (req, res) => {
-  const users = await User.find({});
+  const users = await User.find({}).populate("blogs", {
+    url: true,
+    title: true,
+    author: true,
+  });
   res.status(200).json(users);
 });
 
 userRouter.post("/", async (req, res) => {
-  const { username, name, password } = req.body;
+  const { username, name, password, blogs } = req.body;
 
   if (username.length <= 3 || password.length <= 3) {
     res.status(400);
@@ -30,11 +34,17 @@ userRouter.post("/", async (req, res) => {
     username,
     name,
     passwordHash,
+    blogs,
   });
 
   const savedUser = await user.save();
 
   res.status(201).json(savedUser);
+});
+
+userRouter.delete("/", async (req, res) => {
+  await User.deleteMany({});
+  res.status(204);
 });
 
 userRouter.delete("/:id", async (req, res) => {
