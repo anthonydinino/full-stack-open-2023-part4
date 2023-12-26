@@ -40,11 +40,11 @@ blogRouter.delete("/:id", async (req, res) => {
     .map((id) => id.toString())
     .filter((id) => id === req.params.id)[0];
 
-  await Blog.deleteOne({
+  const result = await Blog.deleteOne({
     _id: blogId,
   });
 
-  res.sendStatus(204);
+  res.sendStatus(result.deletedCount ? 204 : 404);
 });
 
 blogRouter.delete("/", async (req, res) => {
