@@ -7,9 +7,13 @@ app.use(cors());
 app.use(express.json());
 const logger = require("./utils/logger");
 const errorHandler = require("./utils/error_handler");
+const middleware = require("./middleware");
 const blogRouter = require("./controllers/blog");
 const userRouter = require("./controllers/user");
 const loginRouter = require("./controllers/login");
+
+// custom middleware
+app.use(middleware.tokenExtractor);
 
 // controller middleware
 app.use("/api/users", userRouter);

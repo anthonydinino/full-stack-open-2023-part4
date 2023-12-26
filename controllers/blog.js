@@ -20,7 +20,7 @@ blogRouter.get("/", async (req, res) => {
 });
 
 blogRouter.post("/", async (req, res) => {
-  const decodedToken = jwt.verify(getTokenFrom(req), process.env.SECRET);
+  const decodedToken = jwt.verify(req.token, process.env.SECRET);
 
   if (!decodedToken) {
     res.status(401);
