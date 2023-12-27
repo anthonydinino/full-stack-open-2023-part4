@@ -3,9 +3,7 @@ const supertest = require("supertest");
 const app = require("../app");
 const api = supertest(app);
 const Blog = require("../models/blog");
-const helper = require("../utils/blog_helper");
-
-mongoose.set("bufferTimeoutMS", 30000);
+const helper = require("./blog_helper");
 
 describe("when there is initally some blogs saved", () => {
   test("blogs are returned as json", async () => {

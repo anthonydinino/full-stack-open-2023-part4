@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const userRouter = require("express").Router();
 const User = require("../models/user");
-const helper = require("../utils/user_helper");
+const helper = require("../tests/user_helper");
 const { error } = require("../utils/logger");
 
 userRouter.get("/", async (req, res) => {
