@@ -43,10 +43,17 @@ blogRouter.put("/:id", async (req, res) => {
     url: req.body.url,
     likes: req.body.likes,
   };
+  Object.keys(blog).forEach((k) => {
+    if (!blog[k]) throw new Error(`Please provide ${k} and try again`);
+  });
   const newBlog = await Blog.findByIdAndUpdate(req.params.id, blog, {
     new: true,
   });
-  res.status(200).json(newBlog);
+  if (newBlog) {
+    res.status(200).json(newBlog);
+  } else {
+    res.status(204);
+  }
 });
 
 module.exports = blogRouter;
