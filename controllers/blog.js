@@ -65,7 +65,6 @@ blogRouter.put("/:id", async (req, res) => {
 
     // remove blog from existing user
     const oldUser = await User.findById(blog.user.toString());
-    console.log(oldUser.blogs);
     oldUser.blogs = oldUser.blogs.filter((b) => {
       b.id !== blog.id;
     });
