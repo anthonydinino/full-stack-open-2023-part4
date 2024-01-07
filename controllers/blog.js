@@ -1,6 +1,9 @@
 const blogRouter = require("express").Router();
+const mongoose = require("mongoose");
 const Blog = require("../models/blog");
+const User = require("../models/user");
 const middleware = require("../middleware");
+require("express-async-errors");
 
 blogRouter.get("/", async (req, res) => {
   const blogs = await Blog.find({}).populate("user", {
@@ -37,23 +40,41 @@ blogRouter.delete("/", async (req, res) => {
 });
 
 blogRouter.put("/:id", async (req, res) => {
-  const blog = {
+  const newBlog = {
+    user: req.body.user,
     title: req.body.title,
     author: req.body.author,
     url: req.body.url,
     likes: req.body.likes,
   };
-  Object.keys(blog).forEach((k) => {
-    if (!blog[k]) throw new Error(`Please provide ${k} and try again`);
+
+  // validation
+  Object.keys(newBlog).forEach((k) => {
+    if (!newBlog[k]) throw new Error(`missing ${k}`);
   });
-  const newBlog = await Blog.findByIdAndUpdate(req.params.id, blog, {
-    new: true,
-  });
-  if (newBlog) {
-    res.status(200).json(newBlog);
-  } else {
-    res.status(204);
+  const user = await User.findById(newBlog.user);
+  if (!user) throw new Error(`cannot find user`);
+
+  let blog = await Blog.findById(req.params.id);
+
+  // if blog is switching user
+  if (user.id !== blog.user.toString()) {
+    // add blog to new user
+    user.blogs.push(new mongoose.Types.ObjectId(blog.id));
+    user.save();
+
+    // remove blog from existing user
+    const oldUser = await User.findById(blog.user.toString());
+    console.log(oldUser.blogs);
+    oldUser.blogs = oldUser.blogs.filter((b) => {
+      b.id !== blog.id;
+    });
+    oldUser.save();
   }
+
+  blog.overwrite(newBlog);
+  await blog.save();
+  res.status(200).json(blog);
 });
 
 module.exports = blogRouter;
