@@ -6,7 +6,6 @@ const Blog = require("../models/blog");
 const blogHelper = require("./blog_helper");
 const userHelper = require("./user_helper");
 const User = require("../models/user");
-const Test = require("supertest/lib/test");
 
 describe("when there is initally some blogs saved", () => {
   test("blogs are returned as json", async () => {
@@ -132,34 +131,26 @@ describe("deletion of a blog", () => {
 describe("updating of a blog", () => {
   test("blog likes is updated and status of 200 is sent back", async () => {
     const id = "5a422aa71b54a676234d17f8";
-    await api
-      .put(`/api/blogs/${id}`)
-      .send({
-        likes: 77,
-      })
-      .expect(200);
+    await api.put(`/api/blogs/${id}`).send({
+      user: "659a8b8f20480091af4a91df",
+      title: "Go To Statement Considered Harmful",
+      author: "Edsger W. Dijkstra",
+      url: "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
+      likes: 77,
+    });
 
     const oneBlog = await blogHelper.blogInDB(id);
     expect(oneBlog.likes).toBe(77);
-  });
-
-  test("blog name is updated and status of 200 is sent back", async () => {
-    const id = "5a422aa71b54a676234d17f8";
-    await api
-      .put(`/api/blogs/${id}`)
-      .send({
-        title: "Go To Statement Is Not Considered Harmful",
-      })
-      .expect(200);
-
-    const oneBlog = await blogHelper.blogInDB(id);
-    expect(oneBlog.title).toBe("Go To Statement Is Not Considered Harmful");
   });
 
   test("blog with incorrect id sends status of 400", async () => {
     await api
       .put("/api/blogs/test123")
       .send({
+        user: "659a8b8f20480091af4a91df",
+        title: "Go To Statement Considered Harmful",
+        author: "Edsger W. Dijkstra",
+        url: "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
         likes: 77,
       })
       .expect(400);

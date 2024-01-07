@@ -27,11 +27,13 @@ const decodedJwtToken = async (jwtToken) => {
 
 const getTestUsers = async () => [
   {
+    id: new mongoose.Types.ObjectId("659a8b8f20480091af4a91e0"),
     username: "jsmith",
     passwordHash: await bcrypt.hash("password", 10),
     blogs: [new mongoose.Types.ObjectId("5a422aa71b54a676234d17f8")],
   },
   {
+    id: new mongoose.Types.ObjectId("659a8b8f20480091af4a91df"),
     username: "aperry",
     passwordHash: await bcrypt.hash("password", 10),
   },
