@@ -61,14 +61,13 @@ blogRouter.put("/:id", async (req, res) => {
   if (user.id !== blog.user.toString()) {
     // add blog to new user
     user.blogs.push(new mongoose.Types.ObjectId(blog.id));
-    user.save();
+    await user.save();
 
     // remove blog from existing user
-    const oldUser = await User.findById(blog.user.toString());
-    oldUser.blogs = oldUser.blogs.filter((b) => {
-      b.id !== blog.id;
-    });
-    oldUser.save();
+    await User.updateOne(
+      { _id: blog.user.toString() },
+      { $pull: { blogs: new mongoose.Types.ObjectId(blog.id) } }
+    );
   }
 
   blog.overwrite(newBlog);
